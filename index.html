@@ -250,7 +250,6 @@ document.body.style.overflow = "hidden";
     editor.setShowPrintMargin(false);
     document.getElementById('editor').style.fontSize = '14px';
     editor.setTheme("ace/theme/monokai");
-    editor.session.setMode("ace/mode/html");
     editor.setHighlightActiveLine(true),
     editor.setOptions({
         enableBasicAutocompletion: true,
@@ -362,7 +361,6 @@ async function pastefy_app(data) {
 }
 
     async function createPaste() {
-      const title = document.getElementById("titleInput").value.trim();
       const content = editor.getValue().trim();
       const selectedServer = document.getElementById("serverSelect").value;
       const resultDiv = document.getElementById("result");
@@ -416,9 +414,6 @@ fileInput.addEventListener('change', () => {
   const file = fileInput.files[0];
   if (!file) return;
 
-  // Hiện tên file lên input
-  titleInput.value = file.name;
-
   // Đọc nội dung file (giả định là text)
   const reader = new FileReader();
   reader.onload = function(e) {
@@ -433,20 +428,16 @@ async function urlrawinload() {
     console.log("Bạn chưa nhập URL");
     return;
   }
-  
-  } else {
-    try {
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-      const text = await res.text();
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-      titleInput.value = url;
-      editor.setValue(text, -1);
+    const text = await res.text();
+    editor.setValue(text, -1);
 
-    } catch (err) {
-      console.error("Lỗi khi lấy raw content:", err.message);
-    }
+  } catch (err) {
+    console.error("Lỗi khi lấy raw content:", err.message);
   }
 }
 
