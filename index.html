@@ -346,7 +346,7 @@ async function cdn_pastebdn_workers_dev(data) {
 }
 async function pastefy_app(data) {
  try {
- const response = await fetch('https://project-33dtd.vercel.app/api/create.js', {
+ const response = await fetch('https://project-33dtd.vercel.app/api/create', {
  method: 'POST',
  body: data
  });
@@ -381,7 +381,7 @@ async function pastefy_app(data) {
 
       // Kiểm tra và thực thi theo server được chọn
       if (selectedServer === "friendpaste") {
-          finalUrl = await friendpaste_com(content, title);
+          finalUrl = await friendpaste_com(content);
       } else if (selectedServer === "thezomg") {
           finalUrl = await paste_thezomg_com(content);
       } else if (selectedServer === "paste_rs") {
