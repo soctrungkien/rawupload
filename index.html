@@ -337,7 +337,7 @@ async function cdn_pastebdn_workers_dev(data) {
  }
  const result = await response.json();
  if (result && result.id) {
- return `https://cdn.pastebdn.workers.dev/${result.id}`;
+ return `https://cdn.pastebdn.workers.dev/raw/${result.id}`;
  }
  return 'ERROR';
  } catch (error) {
