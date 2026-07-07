@@ -288,28 +288,34 @@ document.body.style.overflow = "hidden";
     });
 
 async function friendpaste_com(data) {
- try {
- const response = await fetch('https://www.friendpaste.com/', {
- method: 'POST',
- headers: {
- 'Content-Type': 'application/json'
- },
- body: JSON.stringify({
- snippet: data,
- language: 'text'
- })
- });
- if (!response.ok) {
- return response.status.toString();
- }
- const result = await response.json();
- if (result.ok && result.url && result.nb_revision) {
- return `${result.url}/raw?rev=${result.nb_revision}`;
- }
- return result.reason || 'ERROR';
- } catch (error) {
- return 'FETCH_ERROR';
- }
+    try {
+        const response = await fetch("https://www.friendpaste.com/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                snippet: data,
+                language: "text"
+            })
+        });
+
+        if (!response.ok) {
+            return response.status.toString();
+        }
+
+        const result = await response.json();
+
+        if (result.ok && result.url && result.rev) {
+            return `${result.url}/raw?rev=${result.rev}`;
+        }
+
+        return result.reason || "ERROR";
+
+    } catch (error) {
+        console.error(error);
+        return "FETCH_ERROR";
+    }
 }
 async function paste_thezomg_com(data) {
  try {
@@ -374,20 +380,23 @@ async function cdn_pastebdn_workers_dev(data) {
  }
 }
 async function pastefy_app(data) {
- try {
- const response = await fetch('https://project-33dtd.vercel.app/api/create', {
- method: 'POST',
- body: data
- });
- if (response.ok) {
- const result = await response.text();
- return result.trim();
- }
- return response.status.toString();
- } catch (error) {
- return 'FETCH_ERROR';
- }
-}
+  try {
+    const response = await fetch("https://project-33dtd.vercel.app/api/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        content: data
+      })
+    });
+
+    return (await response.text()).trim();
+  } catch (err) {
+    console.error(err);
+    return "FETCH_ERROR: " + err.message;
+  }
+	}
 
     async function createPaste() {
       const content = editor.getValue().trim();
