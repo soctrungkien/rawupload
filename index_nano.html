@@ -1,0 +1,24 @@
+<!doctypehtml>
+
+<head>
+<meta charset=UTF-8>
+<meta content="width=device-width,initial-scale=1"name=viewport>
+<title>rawupload</title>
+</head>
+<body>
+<h1>rawupload</h1>
+<textarea id=editor placeholder="Nhập nội dung vào đây..."rows=15 style=width:100%;font-family:monospace></textarea>
+<br><br>
+<div>
+<select id=serverSelect>
+<option value=friendpaste>friendpaste.com</option>
+<option value=thezomg>paste.thezomg.com</option>
+<option value=paste_rs>paste.rs</option>
+<option value=pastebdn>cdn.pastebdn.workers.dev</option>
+<option value=pastefy>pastefy.app</option>
+</select>
+<button onclick=createPaste()>Tạo Page</button>
+</div>
+
+
+<script>const editor=document.getElementById("editor");async function friendpaste_com(t){try{const n=await fetch("https://www.friendpaste.com/",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({snippet:t,language:"text"})});if(!n.ok)return n.status.toString();var e=await n.json();return e.ok&&e.url&&e.rev?`${e.url}/raw?rev=${e.rev}`:e.reason||"ERROR"}catch(t){return"FETCH_ERROR"}}async function paste_thezomg_com(t){try{const n=await fetch("https://corsproxy.io/?"+encodeURIComponent("https://paste.thezomg.com/"),{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams({paste_data:t,paste_lang:"text",api_submit:"true",mode:"json",paste_expire:"0"})});if(!n.ok)return n.status.toString();var e=await n.json();return e.result&&e.result.id?`https://paste.thezomg.com/${e.result.id}/${e.result.hash?`${e.result.hash}/`:""}raw/`:e.error||"ERROR"}catch(t){return"FETCH_ERROR"}}async function paste_rs(t){try{const e=await fetch("https://corsproxy.io/?"+encodeURIComponent("https://paste.rs/"),{method:"POST",body:t});if(201!==e.status&&206!==e.status)return e.status.toString();{const n=await e.text();return n.trim()}}catch(t){return"FETCH_ERROR"}}async function cdn_pastebdn_workers_dev(t){try{const n=await fetch("https://cdn.pastebdn.workers.dev/api",{method:"POST",body:t});if(!n.ok)return n.status.toString();var e=await n.json();return e&&e.id?`https://cdn.pastebdn.workers.dev/raw/${e.id}`:"ERROR"}catch(t){return"FETCH_ERROR"}}async function pastefy_app(t){try{const e=await fetch("https://project-33dtd.vercel.app/api/create",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({content:t})});return(await e.text()).trim()}catch(t){return"FETCH_ERROR: "+t.message}}async function createPaste(){var e=editor.value.trim(),n=document.getElementById("serverSelect").value;const a=document.getElementById("result"),r=document.getElementById("error");if(a.textContent="",r.textContent="",e){var o=performance.now();a.innerHTML="⏳ Đang upload lên hệ thống...";let t="";"friendpaste"===n?t=await friendpaste_com(e):"thezomg"===n?t=await paste_thezomg_com(e):"paste_rs"===n?t=await paste_rs(e):"pastebdn"===n?t=await cdn_pastebdn_workers_dev(e):"pastefy"===n&&(t=await pastefy_app(e));o=(performance.now()-o).toFixed(2);!t||t.includes("ERROR")||t.includes("FETCH_ERROR")?(a.textContent="",r.textContent=`❌ Upload thất bại. Mã/Lý do lỗi: ${t}`):a.innerHTML=`📄 Link: <a href="${t}" target="_blank">${t}</a><br>⏱️ Mất ${o}ms để upload qua <b>${n}</b>.`}else r.textContent="⚠️ Bạn chưa nhập nội dung paste!"}</script>
