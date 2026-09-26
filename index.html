@@ -2622,7 +2622,7 @@
       }
       async function urlrawinload() {
         const url = String(
-          document.getElementById("rawUrlInput").value || "",
+          "https://project-33dtd.vercel.app/api/proxy?url=" + document.getElementById("rawUrlInput").value || "",
         ).trim();
         if (!url) return;
         closeUrlDialog();
